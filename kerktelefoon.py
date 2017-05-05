@@ -7,8 +7,11 @@ import os
 import threading
 
 NAME = 'Schaapskooi'
-URL  = 'http://kerkdienstgemist.nl/streams/456.mp3'
-BACKGROUND = '/home/pi/projects/kerktelefoon/kerkdienst.jpg'
+#URL  = 'http://kerkdienstgemist.nl/streams/456.mp3'
+#URL  = 'https://dev.amersfoort-o.gkv.nl/wp-json/kerktv/v1/audio/live'
+URL  = 'https://dev.amersfoort-o.gkv.nl/wp-json/kerktv/v1/video/live'
+BACKGROUND = None
+#BACKGROUND = '/home/pi/projects/kerktelefoon/kerkdienst.jpg'
 
 
 TODO='''
@@ -52,9 +55,11 @@ class Player(object):
 		self._thread = threading.Thread(target=self._run, daemon=True)
 		self._thread.start()
 	def _run(self):
-		image_process = subprocess.Popen(('/usr/bin/feh -F %s' % BACKGROUND).split())
+		if BACKGROUND:
+			image_process = subprocess.Popen(('/usr/bin/feh -F %s' % BACKGROUND).split())
 		self._process = subprocess.call(('/usr/bin/omxplayer %s' % URL).split())
-		image_process.kill()
+		if BACKGROUND:
+			image_process.kill()
 	def is_stopped(self):
 		return not self._thread.is_alive()
 	def _del_(self):
