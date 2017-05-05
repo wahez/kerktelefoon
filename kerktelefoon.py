@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#sys.exit()
 
 import subprocess
 import time
@@ -45,7 +46,14 @@ class CEC(object):
 				self._process.kill()
 				break
 	def is_stopped(self):
-		return not self._thread.is_alive()
+		if not self._process:
+			return False
+		if self._process.returncode == None:
+			return False
+		elif self._process.returncode == 0:
+			return True
+		else:
+			raise Exception('cec-client error')
 	def _del_(self):
 		self._thread.join()
 
